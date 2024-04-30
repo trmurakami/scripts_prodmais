@@ -19,7 +19,7 @@ while IFS=$'\t' read -r ID_LATTES NM_PROGRAMA_IES NM_ENTIDADE_ENSINO
 do
     # Faz o download do XML do Lattes e salva em um arquivo temporário
     tmpfile=$(mktemp)
-    curl -s "http://200.133.208.25/api/proxy/$ID_LATTES" -o "$tmpfile.xml"
+    curl -s "http://pesq.ufrgs.br:81/api/proxy/$ID_LATTES" -o "$tmpfile.xml"
 
     # Verifica se o download foi bem-sucedido
     if [ ! -s "$tmpfile.xml" ]; then
