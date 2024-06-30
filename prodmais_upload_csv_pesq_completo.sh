@@ -15,7 +15,7 @@ if [ ! -f "$ARQUIVO_TSV" ]; then
 fi
 
 # Lê o arquivo TSV linha por linha
-while IFS=$'\t' read -r NomeDocente ID_LATTES_MERGED Vinculo UnidadeExercicio OrgaoExercicio Curso Habilitacao ProgramaPG
+while IFS=$'\t' read -r NomeDocente ID_LATTES_MERGED Vinculo UnidadeExercicio OrgaoExercicio Curso Habilitacao Turno Modalidade ProgramaPG DESC_NIVEL
 do
     # Faz o download do XML do Lattes e salva em um arquivo temporário
     tmpfile=$(mktemp)
@@ -36,6 +36,7 @@ do
         -F "departamento=$OrgaoExercicio" \
         -F "tipvin=$Vinculo" \
         -F "desc_curso=$Curso" \
+        -F "desc_nivel=$DESC_NIVEL" \
         "https://pesq.ufrgs.br/import_lattes_to_elastic_dedup.php?lattesID=$ID_LATTES_MERGED")
 
     echo "Resposta da API para o ID_LATTES $ID_LATTES_MERGED: $response"
