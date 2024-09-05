@@ -17,30 +17,30 @@ fi
 # Lê o arquivo TSV linha por linha
 while IFS=$'\t' read -r NomeDocente ID_LATTES_MERGED Vinculo UnidadeExercicio OrgaoExercicio Curso Habilitacao Turno Modalidade
 do
-    # Faz o download do XML do Lattes e salva em um arquivo temporário
-    tmpfile=$(mktemp)
-    curl -s "http://pesq.ufrgs.br:81/api/proxy/$ID_LATTES_MERGED" -o "$tmpfile.xml"
+    # # Faz o download do XML do Lattes e salva em um arquivo temporário
+    # tmpfile=$(mktemp)
+    # curl -s "http://pesq.ufrgs.br:81/api/proxy/$ID_LATTES_MERGED" -o "$tmpfile.xml"
 
-    # Verifica se o download foi bem-sucedido
-    if [ ! -s "$tmpfile.xml" ]; then
-        echo "Erro ao baixar o XML para o ID_LATTES: $ID_LATTES_MERGED"
-        rm "$tmpfile.xml"
-        continue
-    fi
+    # # Verifica se o download foi bem-sucedido
+    # if [ ! -s "$tmpfile.xml" ]; then
+    #     echo "Erro ao baixar o XML para o ID_LATTES: $ID_LATTES_MERGED"
+    #     rm "$tmpfile.xml"
+    #     continue
+    # fi
 
     # Envia o XML por POST para a API
-    response=$(curl -s -X POST -k -H "Content-Type: multipart/form-data" -F "file=@$tmpfile.xml" \
+    response=$(curl -s -X POST -k -H "Content-Type: multipart/form-data" -F "file=@/var/www/html/prodmais/data/$ID_LATTES_MERGED.xml" \
         -F "instituicao=Universidade Federal do Rio Grande do Sul" \
         -F "unidade=$UnidadeExercicio" \
         -F "departamento=$OrgaoExercicio" \
         -F "tipvin=$Vinculo" \
         -F "desc_curso=$Curso" \
         -F "desc_nivel=$DESC_NIVEL" \
-        "https://pesq.ufrgs.br/import_lattes_to_elastic_dedup.php?lattesID=$ID_LATTES_MERGED")
+        "http://143.54.211.5/import_lattes_to_elastic_dedup.php?lattesID=$ID_LATTES_MERGED")
 
     echo "Resposta da API para o ID_LATTES $ID_LATTES_MERGED: $response"
 
     # Remove o arquivo temporário
-    rm "$tmpfile.xml"
+    #rm "$tmpfile.xml"
 done < "$ARQUIVO_TSV"
 
